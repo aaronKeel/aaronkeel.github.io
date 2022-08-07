@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "test",
+    "prebuild": "rm *.bundle.js",
     "build": "webpack --config webpack.config.js"
   },
   "repository": {
