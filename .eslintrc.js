@@ -17,5 +17,8 @@ module.exports = {
   plugins: [
     'react',
   ],
-  rules: {},
+  rules: {
+    semi: 2,
+    'import/prefer-default-export': 0,
+  },
 };
