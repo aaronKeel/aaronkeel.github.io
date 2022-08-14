@@ -21,7 +21,7 @@ export const drawBatch = (regl) => regl({
   },
 
   uniforms: {
-    color: [1, 0, 0, 1],
+    color: regl.prop('color'),
     offset: regl.prop('offset'),
   },
 
