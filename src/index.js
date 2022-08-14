@@ -6,14 +6,22 @@ const regl = REGL({
   container: '#main',
 });
 
-const offsets = [-1, -0.5, 0, 0.5];
+const changeButton = document.getElementById('change-button');
 
-const data = offsets.reduce((acc, x) => {
-  const r = offsets.map((y) => ({
-    offset: [x, y],
-    color: randColor(),
-  }));
-  return [...acc, ...r];
-}, []);
+const draw = () => {
+  const offsets = [-1, -0.5, 0, 0.5];
 
-drawBatch(regl)(data);
+  const data = offsets.reduce((acc, x) => {
+    const r = offsets.map((y) => ({
+      offset: [x, y],
+      color: randColor(),
+    }));
+    return [...acc, ...r];
+  }, []);
+
+  drawBatch(regl)(data);
+};
+
+changeButton.addEventListener('click', draw);
+
+draw();
