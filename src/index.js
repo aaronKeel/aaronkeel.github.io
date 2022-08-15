@@ -2,6 +2,8 @@ import REGL from 'regl';
 import { drawBatch } from './js/commands/drawBatch';
 import { randColor } from './js/utils/randColor';
 
+import './style.css';
+
 const regl = REGL({
   container: '#main',
 });
