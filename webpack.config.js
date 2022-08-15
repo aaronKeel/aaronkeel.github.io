@@ -10,13 +10,23 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'src/templates/index.html',
+      template: 'src/templates/base-page.html',
       favicon: 'src/assets/favicon.png',
       filename: 'index.html',
+      hash: true,
+      chunks: ['index'],
+    }),
+    new HtmlWebpackPlugin({
+      template: 'src/templates/base-page.html',
+      favicon: 'src/assets/favicon.png',
+      filename: 'triangles.html',
+      hash: true,
+      chunks: ['triangles'],
     }),
   ],
   entry: {
-    app: './src/index.js',
+    index: './src/js/pages/index.js',
+    triangles: './src/js/pages/triangles.js',
   },
   output: {
     filename: '[name].[contenthash].bundle.js',
