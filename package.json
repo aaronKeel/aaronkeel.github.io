@@ -6,7 +6,8 @@
   "scripts": {
     "test": "test",
     "prebuild": "rm *.bundle.js",
-    "build": "webpack --config webpack.config.js"
+    "build:dev": "webpack serve --open --config webpack.dev.js",
+    "build:prod": "webpack --config webpack.prod.js"
   },
   "repository": {
     "type": "git",
@@ -29,7 +30,9 @@
     "html-webpack-plugin": "^5.5.0",
     "style-loader": "^3.3.1",
     "webpack": "^5.74.0",
-    "webpack-cli": "^4.10.0"
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.10.0",
+    "webpack-merge": "^5.8.0"
   },
   "dependencies": {
     "d3-random": "^3.0.1",

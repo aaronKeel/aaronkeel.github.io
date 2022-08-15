@@ -1,13 +1,8 @@
+/* eslint-disable import/no-extraneous-dependencies */
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 module.exports = {
-  mode: 'development',
-  devtool: 'inline-source-map',
-  devServer: {
-    hot: true,
-    historyApiFallback: true,
-  },
   plugins: [
     new HtmlWebpackPlugin({
       template: 'src/templates/base-page.html',
