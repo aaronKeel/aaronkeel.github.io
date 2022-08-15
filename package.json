@@ -6,8 +6,8 @@
   "scripts": {
     "test": "test",
     "prebuild": "rm *.bundle.js",
-    "build:dev": "webpack serve --open --config webpack.dev.js",
-    "build:prod": "webpack --config webpack.prod.js"
+    "dev": "webpack serve --open --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js"
   },
   "repository": {
     "type": "git",
