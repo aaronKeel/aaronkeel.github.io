@@ -1,3 +1,15 @@
+import { linkList, link } from '../components/link';
 import '../../css/index.css';
 
-console.log('run script');
+const main = document.getElementById('main');
+
+const links = linkList({
+  list: [
+    link({
+      text: 'Triangles',
+      href: './triangles.html',
+    }),
+  ],
+});
+
+main.appendChild(links);
