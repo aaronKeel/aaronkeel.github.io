@@ -25,11 +25,19 @@ module.exports = {
       hash: true,
       chunks: ['triangleScatter'],
     }),
+    new HtmlWebpackPlugin({
+      template: 'src/templates/base-page.html',
+      favicon: 'src/assets/favicon.png',
+      filename: 'vertexTriangle.html',
+      hash: true,
+      chunks: ['vertexTriangle'],
+    }),
   ],
   entry: {
     index: './src/js/pages/index.js',
     triangles: './src/js/pages/triangles.js',
     triangleScatter: './src/js/pages/triangleScatter.js',
+    vertexTriangle: './src/js/pages/vertexTriangle.js',
   },
   output: {
     filename: '[name].[contenthash].bundle.js',

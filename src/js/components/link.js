@@ -1,3 +1,5 @@
+import '../../css/link-list.css';
+
 export const link = ({
   text,
   href,
@@ -51,4 +53,13 @@ export const linkList = ({
   }
 
   return element;
+};
+
+export const renderBasicLinkList = ({ listData, parentElement }) => {
+  const links = linkList({
+    className: 'basic-link-list',
+    list: listData.map((item) => link(item)),
+  });
+
+  parentElement.appendChild(links);
 };
