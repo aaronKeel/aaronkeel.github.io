@@ -4,8 +4,8 @@
   "description": "Personal Page",
   "main": "index.js",
   "scripts": {
-    "test": "test",
-    "prebuild": "rm *.bundle.js",
+    "test": "jest",
+    "prebuild": "rm -rf docs",
     "dev": "webpack serve --open --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js"
   },
@@ -20,12 +20,17 @@
   },
   "homepage": "https://github.com/aaronKeel/aaronkeel.github.io#readme",
   "devDependencies": {
+    "@babel/core": "^7.19.0",
+    "@babel/preset-env": "^7.19.0",
+    "@babel/preset-react": "^7.18.6",
+    "babel-jest": "^29.0.2",
+    "babel-loader": "^8.2.5",
     "css-loader": "^6.7.1",
-    "eslint": "^8.21.0",
+    "eslint": "^8.23.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jsx-a11y": "^6.6.1",
-    "eslint-plugin-react": "^7.30.1",
+    "eslint-plugin-react": "^7.31.8",
     "eslint-plugin-react-hooks": "^4.6.0",
     "html-webpack-plugin": "^5.5.0",
     "style-loader": "^3.3.1",
@@ -36,6 +41,13 @@
   },
   "dependencies": {
     "d3-random": "^3.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "regl": "^2.1.0"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    }
   }
 }
