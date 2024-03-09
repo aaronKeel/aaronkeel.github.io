@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aaron Keel</title>
+
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+    <div id="controls-container">
+        <div class="button-row">
+            <button id="controls-collapse">
+                <svg id="collapse-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+                <svg id="collapse-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 15 12 9 18 15"></polyline>
+                </svg>
+            </button>
+            <button id="generate">
+                Generate
+            </button>
+        </div>
+        <div id="controls-content">
+            <div class="controls-row">
+                <label>
+                    Tile Width
+                    <input type="number" id="tile-width" name="tile-width" required pattern="[1-9]\d*">
+                </label>
+                <label>
+                    Tile Height
+                    <input type="number" id="tile-height" name="tile-height" required pattern="[1-9]\d*">
+                </label>
+            </div>
+            <div class="controls-row">
+                <label>
+                    Canvas Columns
+                    <input type="number" id="canvas-columns" name="canvas-columns" required pattern="[1-9]\d*">
+                </label>
+                <label>
+                    Canvas Rows
+                    <input type="number" id="canvas-rows" name="canvas-rows" required pattern="[1-9]\d*">
+                </label>
+            </div>
+            <div class="controls-row">
+                <label>
+                    Steps
+                    <input type="number" id="walk-steps" name="walk-steps" required pattern="[1-9]\d*">
+                </label>
+            </div>
+        </div>
+    </div>
+    <div id="canvas-container"></div>
+    <script src="script.js"></script>
+</body>
+</html>
