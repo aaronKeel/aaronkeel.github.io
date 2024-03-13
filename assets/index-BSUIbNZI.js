@@ -51,4 +51,4 @@ Error generating stack: `+o.message+`
   &:hover {
     color: rgb(21 145 255 / 87%);
   }
-`;function Im(){return Ft.jsxs(Lm,{children:[Ft.jsx(ya,{children:Ft.jsx(Rm,{children:"aaronkeel.github.io/"})}),Ft.jsx(ya,{children:Ft.jsx($m,{href:"/ResumeAaronKeel.pdf",children:"Resume"})})]})}Go.createRoot(document.getElementById("root")).render(Ft.jsx(En.StrictMode,{children:Ft.jsx(Im,{})}));
+`;function Im(){return Ft.jsxs(Lm,{children:[Ft.jsx(ya,{children:Ft.jsx(Rm,{children:"aaronkeel.github.io/"})}),Ft.jsx(ya,{children:Ft.jsx($m,{href:"/ResumeOnline.pdf",children:"Resume"})})]})}Go.createRoot(document.getElementById("root")).render(Ft.jsx(En.StrictMode,{children:Ft.jsx(Im,{})}));
