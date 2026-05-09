@@ -6,19 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aaron Keel</title>
     <style>
+      html, body {
+        height: 100%;
+      }
       body {
         background-color: black;
         color: #AAA;
-        font-family: Arial, Helvetica, sans-serif;
-        margin: 16;
+        font-family: Helvetica, sans-serif;
+        margin: 0;
+      }
+      #page {
+        width: 100%;
+        height: 100%;
+      }
+      #canvas {
+        display: block;
+        width: 100vw;
+        height: 100vh;
+        background-color: #111;
       }
     </style>
   </head>
   <body>
-    <div id="app">
-      <p>
-        The github page for Aaron Keel.
-      </p>
+    <div id="page">
+      <canvas id="canvas"></canvas>
     </div>
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
