@@ -1,3 +1,4 @@
+import { lightGray } from "../utils/colors";
 import { Vector } from "./Vector";
 
 /**
@@ -13,7 +14,7 @@ export class Vertex {
   constructor(index: number, position: Vector) {
     this.index = index;
     this.position = position;
-    this.color = "#AAA";
+    this.color = lightGray;
   }
 
   setColor(color: string) {

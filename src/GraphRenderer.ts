@@ -1,4 +1,29 @@
+import { Edge } from "./Graph/Edge";
 import { Graph } from "./Graph/Graph";
+import { Vertex } from "./Graph/Vertex";
+import { lightGray } from "./utils/colors";
+
+/**
+ * GraphRendererConfig
+ * This interface defines the configuration options for the GraphRenderer. It allows users to customize the appearance of vertices and edges by providing either static values or functions that return values based on the vertex or edge properties. This flexibility enables dynamic styling of the graph based on its data.
+ */
+export interface GraphRendererConfig {
+  vertexColor?: string | ((vertex: Vertex) => string);
+  vertexStroke?: string | ((vertex: Vertex) => string);
+  vertexStrokeWidth?: number | ((vertex: Vertex) => number);
+  vertexSize?: number | ((vertex: Vertex) => number);
+  edgeColor?: string | ((edge: Edge) => string);
+  edgeWidth?: number | ((edge: Edge) => number);
+}
+
+const DEFAULT_STYLE_CONFIG: GraphRendererConfig = {
+  vertexColor: (vertex) => vertex.color || lightGray,
+  vertexStroke: "#333",
+  vertexStrokeWidth: 1,
+  vertexSize: 5,
+  edgeColor: (edge) => edge.color || lightGray,
+  edgeWidth: 1,
+};
 
 /**
  * GraphRenderer
@@ -26,10 +51,18 @@ export class GraphRenderer {
    */
   private graph: Graph;
 
-  constructor(padding: number = 10, canvasId: string = 'canvas', graph: Graph) {
+  private styleConfig: GraphRendererConfig;
+
+  constructor(
+    padding: number = 10,
+    canvasId: string = "canvas",
+    graph: Graph,
+    styleConfig: GraphRendererConfig = {},
+  ) {
     // Initialize any necessary properties or state here
     this.padding = padding;
     this.graph = graph;
+    this.styleConfig = { ...DEFAULT_STYLE_CONFIG, ...styleConfig };
 
     this.initCanvasContext(canvasId);
 
@@ -70,7 +103,10 @@ export class GraphRenderer {
     const displayWidth = Math.floor(cssWidth * dpr);
     const displayHeight = Math.floor(cssHeight * dpr);
 
-    if (this.canvasElement.width !== displayWidth || this.canvasElement.height !== displayHeight) {
+    if (
+      this.canvasElement.width !== displayWidth ||
+      this.canvasElement.height !== displayHeight
+    ) {
       this.canvasElement.width = displayWidth;
       this.canvasElement.height = displayHeight;
     }
@@ -100,7 +136,10 @@ export class GraphRenderer {
       return;
     }
     const canvas = this.ctx.canvas;
-    const { cssWidth, cssHeight } = this.resizeCanvasToElement() ?? { cssWidth: canvas.clientWidth, cssHeight: canvas.clientHeight };
+    const { cssWidth, cssHeight } = this.resizeCanvasToElement() ?? {
+      cssWidth: canvas.clientWidth,
+      cssHeight: canvas.clientHeight,
+    };
     this.drawEdges(cssWidth, cssHeight);
     this.drawVertices(cssWidth, cssHeight);
   }
@@ -111,9 +150,29 @@ export class GraphRenderer {
       const [x, y] = [vertex.position.x, vertex.position.y];
       const [px, py] = this.toCanvasPoint(x, y, cssWidth, cssHeight);
       this.ctx.beginPath();
-      this.ctx.arc(px, py, 5, 0, 2 * Math.PI);
-      this.ctx.fillStyle = vertex.color;
+      const vertexSize =
+        typeof this.styleConfig.vertexSize === "function"
+          ? this.styleConfig.vertexSize(vertex)
+          : (this.styleConfig.vertexSize ?? 5);
+      this.ctx.arc(px, py, vertexSize, 0, 2 * Math.PI);
+      this.ctx.fillStyle =
+        typeof this.styleConfig.vertexColor === "function"
+          ? this.styleConfig.vertexColor(vertex)
+          : (this.styleConfig.vertexColor ?? lightGray);
       this.ctx.fill();
+      const vertexStroke =
+        typeof this.styleConfig.vertexStroke === "function"
+          ? this.styleConfig.vertexStroke(vertex)
+          : (this.styleConfig.vertexStroke ?? "#333");
+      const vertexStrokeWidth =
+        typeof this.styleConfig.vertexStrokeWidth === "function"
+          ? this.styleConfig.vertexStrokeWidth(vertex)
+          : (this.styleConfig.vertexStrokeWidth ?? 1);
+      if (vertexStrokeWidth > 0) {
+        this.ctx.lineWidth = vertexStrokeWidth;
+        this.ctx.strokeStyle = vertexStroke;
+        this.ctx.stroke();
+      }
     }
   }
 
@@ -130,10 +189,15 @@ export class GraphRenderer {
       this.ctx.beginPath();
       this.ctx.moveTo(px1, py1);
       this.ctx.lineTo(px2, py2);
-      this.ctx.strokeStyle = edge.color;
+      this.ctx.strokeStyle =
+        typeof this.styleConfig.edgeColor === "function"
+          ? this.styleConfig.edgeColor(edge)
+          : (this.styleConfig.edgeColor ?? lightGray);
+      this.ctx.lineWidth =
+        typeof this.styleConfig.edgeWidth === "function"
+          ? this.styleConfig.edgeWidth(edge)
+          : (this.styleConfig.edgeWidth ?? 1);
       this.ctx.stroke();
     }
   }
-
-
 }

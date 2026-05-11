@@ -1,3 +1,5 @@
+import { lightGray } from "../utils/colors";
+
 /**
  * Edge
  * Represents a connection between two vertices in a graph.
@@ -11,7 +13,7 @@ export class Edge {
   constructor(startIndex: number, endIndex: number) {
     this.startIndex = startIndex;
     this.endIndex = endIndex;
-    this.color = "#AAA";
+    this.color = lightGray;
   }
 
   public setColor(color: string) {

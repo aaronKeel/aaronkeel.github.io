@@ -9,11 +9,12 @@ body {
   --bauhaus-yellow: #f5c400;
   --bauhaus-black: #111111;
   --bauhaus-paper: #f2eee5;
+  --light-grey: #aaa;
 }
 
 body {
   background-color: black;
-  color: #aaa;
+  color: var(--light-grey);
   font-family: Helvetica, sans-serif;
   margin: 0;
 }

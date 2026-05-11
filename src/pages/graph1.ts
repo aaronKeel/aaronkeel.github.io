@@ -2,6 +2,7 @@ import { GraphRenderer } from "../GraphRenderer";
 import { Graph } from "../Graph/Graph";
 import { Edge } from "../Graph/Edge";
 import { randomGeometricGraph } from "../Graph/generators";
+import { lightGray } from "../utils/colors";
 
 const VERTEX_COUNT = 300;
 const DISTANCE_THRESHOLD = 0.15;
@@ -13,7 +14,7 @@ const MST_EDGE_COLORS = [
   "#845ef7",
   "#ff922b",
 ];
-const DEFAULT_EDGE_COLOR = "#AAA";
+const DEFAULT_EDGE_COLOR = lightGray;
 
 const graph = computeMinSpanTree(
   randomGeometricGraph(VERTEX_COUNT, DISTANCE_THRESHOLD),
