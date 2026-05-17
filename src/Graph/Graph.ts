@@ -12,14 +12,4 @@ export class Graph {
     this.vertices = vertices;
     this.edges = edges;
   }
-
-  vertexDegree(vertexIndex: number): number {
-    let degree = 0;
-    for (const edge of this.edges) {
-      if (edge.startIndex === vertexIndex || edge.endIndex === vertexIndex) {
-        degree++;
-      }
-    }
-    return degree;
-  }
 }

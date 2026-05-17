@@ -1,18 +1,9 @@
 import { Edge } from "../graph/Edge";
 import { Graph } from "../graph/Graph";
 import { Vertex } from "../graph/Vertex";
+import { GraphLayout } from "../layout/GraphLayout";
 import { Vector } from "../vector/Vector";
 import { lightGray } from "../utils/colors";
-
-/**
- * GraphLayout
- * This interface provides the vertex placement strategy used by the renderer.
- * It keeps layout data separate from the graph structure so alternative layouts
- * can be plugged in without changing the graph model.
- */
-export interface GraphLayout {
-  vertexPosition(vertexIndex: number): Vector;
-}
 
 /**
  * GraphStyleConfig
