@@ -1,4 +1,3 @@
-import { lightGray } from "../utils/colors";
 import { Vector } from "./Vector";
 
 /**
@@ -7,17 +6,14 @@ import { Vector } from "./Vector";
  * Each vertex has a unique index and a position in 2D space.
  */
 export class Vertex {
+  // The unique index of the vertex within the graph.
   public readonly index: number;
+
+  // The position of the vertex in 2D space, represented as a Vector.
   public readonly position: Vector;
-  public color: string;
 
   constructor(index: number, position: Vector) {
     this.index = index;
     this.position = position;
-    this.color = lightGray;
-  }
-
-  setColor(color: string) {
-    this.color = color;
   }
 }

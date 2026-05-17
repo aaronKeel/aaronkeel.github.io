@@ -1,7 +1,7 @@
-import { Edge } from "./Graph/Edge";
-import { Graph } from "./Graph/Graph";
-import { Vertex } from "./Graph/Vertex";
-import { lightGray } from "./utils/colors";
+import { Edge } from "../graph/Edge";
+import { Graph } from "../graph/Graph";
+import { Vertex } from "../graph/Vertex";
+import { lightGray } from "../utils/colors";
 
 /**
  * GraphRendererConfig
@@ -17,11 +17,11 @@ export interface GraphRendererConfig {
 }
 
 const DEFAULT_STYLE_CONFIG: GraphRendererConfig = {
-  vertexColor: (vertex) => vertex.color || lightGray,
+  vertexColor: lightGray,
   vertexStroke: "#333",
   vertexStrokeWidth: 1,
   vertexSize: 5,
-  edgeColor: (edge) => edge.color || lightGray,
+  edgeColor: lightGray,
   edgeWidth: 1,
 };
 
