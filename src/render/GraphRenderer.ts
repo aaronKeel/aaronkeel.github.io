@@ -1,7 +1,7 @@
 import { Edge } from "../graph/Edge";
 import { Graph } from "../graph/Graph";
 import { Vertex } from "../graph/Vertex";
-import { Vector } from "../graph/Vector";
+import { Vector } from "../vector/Vector";
 import { lightGray } from "../utils/colors";
 
 /**

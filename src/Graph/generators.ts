@@ -1,6 +1,6 @@
 import { Edge } from "./Edge";
 import { Graph } from "./Graph";
-import { Vector } from "./Vector";
+import { Vector } from "../vector/Vector";
 import { Vertex } from "./Vertex";
 import { GraphLayout } from "../render/GraphRenderer";
 
