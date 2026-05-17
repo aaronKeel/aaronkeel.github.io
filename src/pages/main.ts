@@ -1,11 +1,14 @@
-import { GraphRenderer, GraphRendererConfig } from "../render/GraphRenderer";
+import {
+  GraphRenderer,
+  GraphStyleConfig,
+} from "../render/GraphRenderer";
 import { randomGeometricGraph } from "../graph/generators";
 import { b20Colors, black } from "../utils/colors";
 import { Graph } from "../graph/Graph";
 
 const VERTEX_COUNT = 80;
 const DISTANCE_THRESHOLD = 0.15;
-const graph = randomGeometricGraph(VERTEX_COUNT, DISTANCE_THRESHOLD);
+const { graph, layout } = randomGeometricGraph(VERTEX_COUNT, DISTANCE_THRESHOLD);
 const vertexColors = new Map<number, string>();
 
 /**
@@ -42,7 +45,7 @@ const colorVertices = (graph: Graph): Map<number, string> => {
   return vertexColors;
 };
 
-const graphStyles: Partial<GraphRendererConfig> = {
+const graphStyles: Partial<GraphStyleConfig> = {
   vertexColor: (vertex) => vertexColors.get(vertex.index) ?? b20Colors[0],
   vertexSize: 10,
   vertexStroke: black,
@@ -53,5 +56,5 @@ const graphStyles: Partial<GraphRendererConfig> = {
 
 colorVertices(graph);
 
-const renderer = new GraphRenderer(40, "canvas", graph, graphStyles);
+const renderer = new GraphRenderer(40, "canvas", graph, layout, graphStyles);
 renderer.render();

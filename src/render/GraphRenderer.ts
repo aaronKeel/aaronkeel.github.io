@@ -1,13 +1,27 @@
 import { Edge } from "../graph/Edge";
 import { Graph } from "../graph/Graph";
 import { Vertex } from "../graph/Vertex";
+import { Vector } from "../graph/Vector";
 import { lightGray } from "../utils/colors";
 
 /**
- * GraphRendererConfig
- * This interface defines the configuration options for the GraphRenderer. It allows users to customize the appearance of vertices and edges by providing either static values or functions that return values based on the vertex or edge properties. This flexibility enables dynamic styling of the graph based on its data.
+ * GraphLayout
+ * This interface provides the vertex placement strategy used by the renderer.
+ * It keeps layout data separate from the graph structure so alternative layouts
+ * can be plugged in without changing the graph model.
  */
-export interface GraphRendererConfig {
+export interface GraphLayout {
+  vertexPosition(vertexIndex: number): Vector;
+}
+
+/**
+ * GraphStyleConfig
+ * This interface defines the visual styling options for the GraphRenderer.
+ * It allows users to customize the appearance of vertices and edges by
+ * providing either static values or functions that return values based on the
+ * vertex or edge properties.
+ */
+export interface GraphStyleConfig {
   vertexColor?: string | ((vertex: Vertex) => string);
   vertexStroke?: string | ((vertex: Vertex) => string);
   vertexStrokeWidth?: number | ((vertex: Vertex) => number);
@@ -16,7 +30,11 @@ export interface GraphRendererConfig {
   edgeWidth?: number | ((edge: Edge) => number);
 }
 
-const DEFAULT_STYLE_CONFIG: GraphRendererConfig = {
+const DEFAULT_LAYOUT: GraphLayout = {
+  vertexPosition: () => new Vector(0, 0),
+};
+
+const DEFAULT_STYLE_CONFIG: GraphStyleConfig = {
   vertexColor: lightGray,
   vertexStroke: "#333",
   vertexStrokeWidth: 1,
@@ -51,17 +69,21 @@ export class GraphRenderer {
    */
   private graph: Graph;
 
-  private styleConfig: GraphRendererConfig;
+  private layout: GraphLayout;
+
+  private styleConfig: GraphStyleConfig;
 
   constructor(
     padding: number = 10,
     canvasId: string = "canvas",
     graph: Graph,
-    styleConfig: GraphRendererConfig = {},
+    layout: GraphLayout = DEFAULT_LAYOUT,
+    styleConfig: GraphStyleConfig = {},
   ) {
     // Initialize any necessary properties or state here
     this.padding = padding;
     this.graph = graph;
+    this.layout = layout;
     this.styleConfig = { ...DEFAULT_STYLE_CONFIG, ...styleConfig };
 
     this.initCanvasContext(canvasId);
@@ -147,7 +169,8 @@ export class GraphRenderer {
   private drawVertices(cssWidth: number, cssHeight: number) {
     if (!this.ctx) return;
     for (const vertex of this.graph.vertices) {
-      const [x, y] = [vertex.position.x, vertex.position.y];
+      const position = this.layout.vertexPosition(vertex.index);
+      const [x, y] = [position.x, position.y];
       const [px, py] = this.toCanvasPoint(x, y, cssWidth, cssHeight);
       this.ctx.beginPath();
       const vertexSize =
@@ -182,8 +205,10 @@ export class GraphRenderer {
     for (const edge of this.graph.edges) {
       const startVertex = this.graph.vertices[edge.startIndex];
       const endVertex = this.graph.vertices[edge.endIndex];
-      const [x1, y1] = [startVertex.position.x, startVertex.position.y];
-      const [x2, y2] = [endVertex.position.x, endVertex.position.y];
+      const startPosition = this.layout.vertexPosition(startVertex.index);
+      const endPosition = this.layout.vertexPosition(endVertex.index);
+      const [x1, y1] = [startPosition.x, startPosition.y];
+      const [x2, y2] = [endPosition.x, endPosition.y];
       const [px1, py1] = this.toCanvasPoint(x1, y1, cssWidth, cssHeight);
       const [px2, py2] = this.toCanvasPoint(x2, y2, cssWidth, cssHeight);
       this.ctx.beginPath();

@@ -2,6 +2,12 @@ import { Edge } from "./Edge";
 import { Graph } from "./Graph";
 import { Vector } from "./Vector";
 import { Vertex } from "./Vertex";
+import { GraphLayout } from "../render/GraphRenderer";
+
+export interface GraphWithLayout {
+  graph: Graph;
+  layout: GraphLayout;
+}
 
 /**
  * Random geometric graph
@@ -11,24 +17,34 @@ import { Vertex } from "./Vertex";
 export const randomGeometricGraph = (
   vertexCount: number,
   distanceThreshold: number,
-): Graph => {
+): GraphWithLayout => {
   const vertices: Vertex[] = [];
+  const positions = new Map<number, Vector>();
   for (let i = 0; i < vertexCount; i++) {
     const position = new Vector(Math.random(), Math.random());
-    vertices.push(new Vertex(i, position));
+    vertices.push(new Vertex(i));
+    positions.set(i, position);
   }
   const edges: Edge[] = [];
   for (let i = 0; i < vertexCount; i++) {
     for (let j = i + 1; j < vertexCount; j++) {
+      const firstPosition = positions.get(i);
+      const secondPosition = positions.get(j);
       if (
-        vertices[i].position.distanceTo(vertices[j].position) <=
-        distanceThreshold
+        firstPosition &&
+        secondPosition &&
+        firstPosition.distanceTo(secondPosition) <= distanceThreshold
       ) {
         edges.push(new Edge(i, j));
       }
     }
   }
-  return new Graph(vertices, edges);
+  return {
+    graph: new Graph(vertices, edges),
+    layout: {
+      vertexPosition: (vertexIndex) => positions.get(vertexIndex) ?? new Vector(0, 0),
+    },
+  };
 };
 
 /**
@@ -39,13 +55,15 @@ export const randomGeometricGraph = (
  * For example, a 3x3 lattice graph will have 9 vertices and 12 edges.
  * The vertex at row i and column j will have a position of (j/(cols-1), i/(rows-1)).
  */
-export const latticeGraph = (rows: number, cols: number): Graph => {
+export const latticeGraph = (rows: number, cols: number): GraphWithLayout => {
   const vertices: Vertex[] = [];
+  const positions = new Map<number, Vector>();
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
       const index = i * cols + j;
       const position = new Vector(j / (cols - 1), i / (rows - 1)); // x corresponds to column, y corresponds to row
-      vertices.push(new Vertex(index, position));
+      vertices.push(new Vertex(index));
+      positions.set(index, position);
     }
   }
   const edges: Edge[] = [];
@@ -60,5 +78,10 @@ export const latticeGraph = (rows: number, cols: number): Graph => {
       }
     }
   }
-  return new Graph(vertices, edges);
+  return {
+    graph: new Graph(vertices, edges),
+    layout: {
+      vertexPosition: (vertexIndex) => positions.get(vertexIndex) ?? new Vector(0, 0),
+    },
+  };
 };
