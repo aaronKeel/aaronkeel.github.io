@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/a.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Garage</title>
+    <style>
+      html, body {
+        height: 100%;
+      }
+      body {
+        background-color: black;
+        color: #AAA;
+        font-family: Helvetica, sans-serif;
+        margin: 0;
+      }
+      #page {
+        width: 100%;
+        height: 100%;
+      }
+      #canvas {
+        display: block;
+        width: 100vw;
+        height: 100vh;
+        background-color: #111;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <canvas id="canvas"></canvas>
+    </div>
+    <script type="module" src="/src/pages/graph4.ts"></script>
+  </body>
+</html>

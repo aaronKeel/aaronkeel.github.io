@@ -60,3 +60,44 @@ export const degreeRadialLayout = (
     },
   };
 };
+
+/**
+ * Color partite layout
+ * Organizes vertices into vertical columns based on their color class from graph coloring.
+ * Vertices sharing a color (an independent set) are grouped into the same column,
+ * producing a k-partite style visualization.
+ */
+export const colorPartiteLayout = (
+  colorMap: Map<number, string>,
+): GraphLayout => {
+  const colorGroups = new Map<string, number[]>();
+  for (const [vertexIndex, color] of colorMap.entries()) {
+    if (!colorGroups.has(color)) {
+      colorGroups.set(color, []);
+    }
+    colorGroups.get(color)!.push(vertexIndex);
+  }
+
+  const colorColumns = new Map<string, number>();
+  let columnIndex = 0;
+  for (const color of colorGroups.keys()) {
+    colorColumns.set(color, columnIndex++);
+  }
+  const totalColumns = colorGroups.size;
+
+  const positions = new Map<number, Vector>();
+  for (const [color, members] of colorGroups.entries()) {
+    const colIdx = colorColumns.get(color) ?? 0;
+    const x = totalColumns <= 1 ? 0.5 : 0.1 + 0.8 * (colIdx / (totalColumns - 1));
+    members.forEach((vIndex, posInCol) => {
+      const colSize = members.length;
+      const y = colSize <= 1 ? 0.5 : 0.1 + 0.8 * (posInCol / (colSize - 1));
+      positions.set(vIndex, new Vector(x, y));
+    });
+  }
+
+  return {
+    vertexPosition: (vertexIndex) =>
+      positions.get(vertexIndex) ?? new Vector(0.5, 0.5),
+  };
+};

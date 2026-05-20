@@ -63,3 +63,25 @@ export const latticeGraph = (rows: number, cols: number): Graph => {
   }
   return new Graph(vertices, edges);
 };
+
+/**
+ * Erdős–Rényi random graph
+ * Generates a random graph with n vertices where each pair of vertices is connected with independent probability p.
+ * This is the G(n, p) model of random graph generation.
+ * Expected number of edges: n * (n-1) / 2 * p
+ */
+export const erdosRenyiGraph = (n: number, p: number): Graph => {
+  const vertices: Vertex[] = [];
+  for (let i = 0; i < n; i++) {
+    vertices.push(new Vertex(i));
+  }
+  const edges: Edge[] = [];
+  for (let i = 0; i < n; i++) {
+    for (let j = i + 1; j < n; j++) {
+      if (Math.random() < p) {
+        edges.push(new Edge(i, j));
+      }
+    }
+  }
+  return new Graph(vertices, edges);
+};
