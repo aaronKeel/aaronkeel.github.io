@@ -27,6 +27,10 @@ export interface SimulationConfig {
 export interface SimulationHandle {
   step: (steps?: number) => void;
   getState: () => SimulationState;
+  start: () => void;
+  stop: () => void;
+  on: (event: string, handler: (payload: unknown) => void) => void;
+  off: (event: string, handler: (payload: unknown) => void) => void;
 }
 
 export function createSimulation(
@@ -56,6 +60,36 @@ export function createSimulation(
   const nodeIndexByVertexId = new Map<number, number>(
     state.nodes.map((node, idx) => [node.id, idx])
   );
+  let isRunning = false;
+  let timerId: ReturnType<typeof globalThis.setTimeout> | null = null;
+  const listeners = new Map<string, Set<(payload: unknown) => void>>();
+
+  function emit(event: string, payload: unknown): void {
+    const handlers = listeners.get(event);
+
+    if (handlers === undefined) {
+      return;
+    }
+
+    for (const handler of handlers) {
+      handler(payload);
+    }
+  }
+
+  function scheduleNextTick(): void {
+    if (!isRunning) {
+      return;
+    }
+
+    timerId = globalThis.setTimeout(() => {
+      if (!isRunning) {
+        return;
+      }
+
+      stepOnce();
+      scheduleNextTick();
+    }, Math.round(dt * 1000));
+  }
 
   function stepOnce(): void {
     const fx = new Array<number>(state.nodes.length).fill(0);
@@ -114,9 +148,47 @@ export function createSimulation(
         node.vy = 0;
       }
     }
+
+    emit("tick", {
+      state: state.nodes.map((node) => ({ ...node })),
+    });
   }
 
   return {
+    on: (event: string, handler: (payload: unknown) => void): void => {
+      const handlers = listeners.get(event) ?? new Set<(payload: unknown) => void>();
+      handlers.add(handler);
+      listeners.set(event, handlers);
+    },
+    off: (event: string, handler: (payload: unknown) => void): void => {
+      const handlers = listeners.get(event);
+
+      if (handlers === undefined) {
+        return;
+      }
+
+      handlers.delete(handler);
+
+      if (handlers.size === 0) {
+        listeners.delete(event);
+      }
+    },
+    start: (): void => {
+      if (isRunning) {
+        return;
+      }
+
+      isRunning = true;
+      scheduleNextTick();
+    },
+    stop: (): void => {
+      isRunning = false;
+
+      if (timerId !== null) {
+        globalThis.clearTimeout(timerId);
+        timerId = null;
+      }
+    },
     step: (steps = 1): void => {
       const count = Math.max(0, Math.floor(steps));
       for (let i = 0; i < count; i += 1) {
