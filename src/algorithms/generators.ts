@@ -85,3 +85,70 @@ export const erdosRenyiGraph = (n: number, p: number): Graph => {
   }
   return new Graph(vertices, edges);
 };
+
+/**
+ * Triangles graph (triangle-expansion / 3-tree style growth)
+ * Starts from K3 and repeatedly adds one vertex adjacent to all three vertices of a chosen triangle.
+ */
+export const trianglesGraph = (n: number): Graph => {
+  if (n < 3) {
+    throw new RangeError("trianglesGraph requires n >= 3");
+  }
+
+  const vertices: Vertex[] = [new Vertex(0), new Vertex(1), new Vertex(2)];
+  const edges: Edge[] = [new Edge(0, 1), new Edge(0, 2), new Edge(1, 2)];
+  const adjacency = new Map<number, Set<number>>([
+    [0, new Set([1, 2])],
+    [1, new Set([0, 2])],
+    [2, new Set([0, 1])],
+  ]);
+
+  const addEdge = (a: number, b: number): void => {
+    const start = Math.min(a, b);
+    const end = Math.max(a, b);
+    edges.push(new Edge(start, end));
+    adjacency.get(start)?.add(end);
+    adjacency.get(end)?.add(start);
+  };
+
+  let k = 3;
+  while (k < n) {
+    const triangles: Array<[number, number, number]> = [];
+
+    // Enumerate all current triangles i < j < m.
+    for (let i = 0; i < k; i++) {
+      const neighborsI = adjacency.get(i);
+      if (!neighborsI) {
+        continue;
+      }
+      for (let j = i + 1; j < k; j++) {
+        if (!neighborsI.has(j)) {
+          continue;
+        }
+        for (let m = j + 1; m < k; m++) {
+          if (neighborsI.has(m) && adjacency.get(j)?.has(m)) {
+            triangles.push([i, j, m]);
+          }
+        }
+      }
+    }
+
+    if (triangles.length === 0) {
+      throw new Error("No triangle found during trianglesGraph generation");
+    }
+
+    const triangle = triangles[Math.floor(Math.random() * triangles.length)];
+    const newIndex = k;
+    vertices.push(new Vertex(newIndex));
+    adjacency.set(newIndex, new Set<number>());
+
+    addEdge(newIndex, triangle[0]);
+    addEdge(newIndex, triangle[1]);
+    addEdge(newIndex, triangle[2]);
+
+    k += 1;
+  }
+
+  return new Graph(vertices, edges);
+};
+
