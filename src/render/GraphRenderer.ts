@@ -153,8 +153,13 @@ export class GraphRenderer {
       cssWidth: canvas.clientWidth,
       cssHeight: canvas.clientHeight,
     };
+    this.ctx.clearRect(0, 0, cssWidth, cssHeight);
     this.drawEdges(cssWidth, cssHeight);
     this.drawVertices(cssWidth, cssHeight);
+  }
+
+  public setGraph(graph: Graph) {
+    this.graph = graph;
   }
 
   private drawVertices(cssWidth: number, cssHeight: number) {
