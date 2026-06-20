@@ -162,6 +162,10 @@ export class GraphRenderer {
     this.graph = graph;
   }
 
+  public setLayout(layout: GraphLayout) {
+    this.layout = layout;
+  }
+
   private drawVertices(cssWidth: number, cssHeight: number) {
     if (!this.ctx) return;
     for (const vertex of this.graph.vertices) {

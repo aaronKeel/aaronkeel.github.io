@@ -109,6 +109,10 @@ export interface ForceDirectedLayoutOptions {
   repulsion?: number;
   attraction?: number;
   jitter?: number;
+  centerStrength?: number;
+  boundsPadding?: number;
+  boundaryStrength?: number;
+  targetSpan?: number;
 }
 
 /**
@@ -133,6 +137,10 @@ export const forceDirectedLayout = (
   const repulsion = options.repulsion ?? 1;
   const attraction = options.attraction ?? 1;
   const jitter = options.jitter ?? 0.001;
+  const centerStrength = options.centerStrength ?? 0.24;
+  const boundsPadding = Math.max(0, Math.min(0.45, options.boundsPadding ?? 0.1));
+  const boundaryStrength = options.boundaryStrength ?? 0.9;
+  const targetSpan = Math.max(0.1, Math.min(0.95, options.targetSpan ?? 0.64));
 
   // Start on a circle for deterministic, well-spaced initialization.
   for (let i = 0; i < vertexCount; i++) {
@@ -199,7 +207,49 @@ export const forceDirectedLayout = (
       displacement.set(u, (displacement.get(u) ?? new Vector(0, 0)).add(offset));
     }
 
-    // Move vertices with capped step size and keep inside unit square.
+    // Gentle gravity toward center keeps sparse graphs from pinning to borders.
+    for (const vertex of graph.vertices) {
+      const index = vertex.index;
+      const pos = positions.get(index) ?? new Vector(0.5, 0.5);
+      const towardCenter = new Vector(0.5 - pos.x, 0.5 - pos.y).scale(centerStrength);
+      displacement.set(
+        index,
+        (displacement.get(index) ?? new Vector(0, 0)).add(towardCenter),
+      );
+    }
+
+    // Soft boundary force pushes vertices inward before they touch hard bounds.
+    const minBound = boundsPadding;
+    const maxBound = 1 - boundsPadding;
+    for (const vertex of graph.vertices) {
+      const index = vertex.index;
+      const pos = positions.get(index) ?? new Vector(0.5, 0.5);
+      let boundaryPushX = 0;
+      let boundaryPushY = 0;
+
+      if (pos.x < minBound) {
+        boundaryPushX = (minBound - pos.x) * boundaryStrength;
+      } else if (pos.x > maxBound) {
+        boundaryPushX = -(pos.x - maxBound) * boundaryStrength;
+      }
+
+      if (pos.y < minBound) {
+        boundaryPushY = (minBound - pos.y) * boundaryStrength;
+      } else if (pos.y > maxBound) {
+        boundaryPushY = -(pos.y - maxBound) * boundaryStrength;
+      }
+
+      if (boundaryPushX !== 0 || boundaryPushY !== 0) {
+        displacement.set(
+          index,
+          (displacement.get(index) ?? new Vector(0, 0)).add(
+            new Vector(boundaryPushX, boundaryPushY),
+          ),
+        );
+      }
+    }
+
+    // Move vertices with capped step size; use wide absolute clamp only for stability.
     for (const vertex of graph.vertices) {
       const index = vertex.index;
       const pos = positions.get(index) ?? new Vector(0.5, 0.5);
@@ -208,12 +258,47 @@ export const forceDirectedLayout = (
       const step = Math.min(temperature, dispLength);
       const move = disp.scale(step / dispLength);
 
-      const x = Math.min(0.95, Math.max(0.05, pos.x + move.x));
-      const y = Math.min(0.95, Math.max(0.05, pos.y + move.y));
+      const x = Math.min(0.98, Math.max(0.02, pos.x + move.x));
+      const y = Math.min(0.98, Math.max(0.02, pos.y + move.y));
       positions.set(index, new Vector(x, y));
     }
 
     temperature *= cooling;
+  }
+
+  // Final normalization pass: center and compress cluster to desired span.
+  let centerX = 0;
+  let centerY = 0;
+  for (const vertex of graph.vertices) {
+    const pos = positions.get(vertex.index) ?? new Vector(0.5, 0.5);
+    centerX += pos.x;
+    centerY += pos.y;
+  }
+  centerX /= vertexCount;
+  centerY /= vertexCount;
+
+  const halfTargetSpan = targetSpan / 2;
+  let maxAbsFromCenter = 0;
+  for (const vertex of graph.vertices) {
+    const pos = positions.get(vertex.index) ?? new Vector(0.5, 0.5);
+    const dx = pos.x - centerX;
+    const dy = pos.y - centerY;
+    maxAbsFromCenter = Math.max(maxAbsFromCenter, Math.abs(dx), Math.abs(dy));
+  }
+  const scale = maxAbsFromCenter > 0 ? Math.min(1, halfTargetSpan / maxAbsFromCenter) : 1;
+
+  for (const vertex of graph.vertices) {
+    const index = vertex.index;
+    const pos = positions.get(index) ?? new Vector(0.5, 0.5);
+    const recentered = new Vector(
+      0.5 + (pos.x - centerX) * scale,
+      0.5 + (pos.y - centerY) * scale,
+    );
+    const clamped = new Vector(
+      Math.min(1 - boundsPadding, Math.max(boundsPadding, recentered.x)),
+      Math.min(1 - boundsPadding, Math.max(boundsPadding, recentered.y)),
+    );
+    positions.set(index, clamped);
   }
 
   return {
