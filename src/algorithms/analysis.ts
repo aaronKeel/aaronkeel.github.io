@@ -1,5 +1,14 @@
 import { Graph } from "../graph/Graph";
 
+/**
+ * Builds an undirected adjacency list for the given graph.
+ *
+ * Each key is a vertex index and each value is the list of neighboring vertex
+ * indices connected by an edge.
+ *
+ * @param graph Graph to analyze.
+ * @returns Mapping of vertex index to its neighboring vertex indices.
+ */
 export const buildAdjacency = (graph: Graph): Map<number, number[]> => {
   const adjacency = new Map<number, number[]>();
   for (const vertex of graph.vertices) {
@@ -12,10 +21,25 @@ export const buildAdjacency = (graph: Graph): Map<number, number[]> => {
   return adjacency;
 };
 
+/**
+ * Computes the degree of a single vertex.
+ *
+ * Degree is the number of incident edges for the specified vertex.
+ *
+ * @param graph Graph to analyze.
+ * @param vertexIndex Index of the vertex.
+ * @returns Degree of the vertex, or 0 if the vertex is not present.
+ */
 export const vertexDegree = (graph: Graph, vertexIndex: number): number => {
   return buildAdjacency(graph).get(vertexIndex)?.length ?? 0;
 };
 
+/**
+ * Computes the degree of every vertex in the graph.
+ *
+ * @param graph Graph to analyze.
+ * @returns Mapping of vertex index to degree.
+ */
 export const vertexDegrees = (graph: Graph): Map<number, number> => {
   const adjacency = buildAdjacency(graph);
   const degrees = new Map<number, number>();
@@ -27,6 +51,16 @@ export const vertexDegrees = (graph: Graph): Map<number, number> => {
   return degrees;
 };
 
+/**
+ * Colors vertices using a greedy first-fit strategy.
+ *
+ * Vertices are processed in their existing order. For each vertex, the first
+ * palette color not used by already-colored neighbors is selected.
+ *
+ * @param graph Graph to color.
+ * @param palette Ordered list of candidate colors.
+ * @returns Mapping of vertex index to assigned color.
+ */
 export const greedyVertexColoring = (
   graph: Graph,
   palette: string[],
@@ -55,11 +89,15 @@ export const greedyVertexColoring = (
 };
 
 /**
- * Equitable vertex coloring
- * Produces a proper graph coloring where color class sizes differ by at most 1.
- * Uses a balanced greedy strategy: vertices are processed in descending degree order
- * (Welsh-Powell), and at each step the valid color with the smallest current class
- * size is chosen, distributing vertices as evenly as possible across colors.
+ * Colors vertices with a balanced greedy strategy.
+ *
+ * Vertices are processed in descending degree order (Welsh-Powell). At each
+ * step, among valid colors, the one with the smallest current class size is
+ * chosen to keep color classes as even as possible.
+ *
+ * @param graph Graph to color.
+ * @param palette Ordered list of candidate colors.
+ * @returns Mapping of vertex index to assigned color.
  */
 export const equitableVertexColoring = (
   graph: Graph,
