@@ -1,6 +1,6 @@
-import { Edge } from "../../graph/Edge";
-import { Graph } from "../../graph/Graph";
-import { Vertex } from "../../graph/Vertex";
+import { Edge } from "../graph/Edge";
+import { Graph } from "../graph/Graph";
+import { Vertex } from "../graph/Vertex";
 import { commonGreekGods } from "./commonGreekGods";
 import type {
   DeityDataset,

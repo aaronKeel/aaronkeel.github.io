@@ -2,7 +2,7 @@ import {
   commonGreekGods,
   commonGreekGodsGraph,
   type DeityCategory,
-} from "../data/gods";
+} from "../gods";
 import { GraphLayout } from "../layout/GraphLayout";
 import { GraphRenderer, GraphStyleConfig } from "../render/GraphRenderer";
 import { black } from "../utils/colors";
