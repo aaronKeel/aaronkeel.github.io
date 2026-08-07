@@ -1,14 +1,15 @@
 import { Vector } from "./vector";
 import { Point } from "./point";
+import { Dataset } from "./types";
 
-const AXES_COLOR = "white";
+const AXES_COLOR = "#f2eee5"; // bauhaus-paper
 
 export class View {
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
 
   public padding: number;
-  public datasets: Point[][];
+  public datasets: Dataset[];
 
   constructor(canvasId: string) {
     this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
@@ -21,7 +22,7 @@ export class View {
   private dataMinX(): number {
     let minX = Infinity;
     for (const dataset of this.datasets) {
-      for (const point of dataset) {
+      for (const point of dataset.points) {
         if (point.position.x < minX) {
           minX = point.position.x;
         }
@@ -33,7 +34,7 @@ export class View {
   private dataMaxX(): number {
     let maxX = -Infinity;
     for (const dataset of this.datasets) {
-      for (const point of dataset) {
+      for (const point of dataset.points) {
         if (point.position.x > maxX) {
           maxX = point.position.x;
         }
@@ -45,7 +46,7 @@ export class View {
   private dataMinY(): number {
     let minY = Infinity;
     for (const dataset of this.datasets) {
-      for (const point of dataset) {
+      for (const point of dataset.points) {
         if (point.position.y < minY) {
           minY = point.position.y;
         }
@@ -57,7 +58,7 @@ export class View {
   private dataMaxY(): number {
     let maxY = -Infinity;
     for (const dataset of this.datasets) {
-      for (const point of dataset) {
+      for (const point of dataset.points) {
         if (point.position.y > maxY) {
           maxY = point.position.y;
         }
@@ -85,7 +86,7 @@ export class View {
     return new Vector(canvasX, canvasY);
   }
 
-  public setDatasets(datasets: Point[][]): void {
+  public setDatasets(datasets: Dataset[]): void {
     this.datasets = datasets;
   }
 
@@ -100,15 +101,16 @@ export class View {
     const xRange = xDomain[1] - xDomain[0] || 1;
     const yRange = yDomain[1] - yDomain[0] || 1;
 
-    const xAxisY =
-      (1 - (0 - yDomain[0]) / yRange) * plotHeight + this.padding;
-    const yAxisX = ((0 - xDomain[0]) / xRange) * plotWidth + this.padding;
+    // Place X axis along the bottom of the chart area and Y axis on the left
+    const xAxisY = canvasHeight - this.padding;
+    const yAxisX = this.padding;
 
     // Draw X-axis
     this.context.beginPath();
     this.context.moveTo(this.padding, xAxisY);
     this.context.lineTo(canvasWidth - this.padding, xAxisY);
     this.context.strokeStyle = AXES_COLOR;
+    this.context.lineWidth = 2; // bold Bauhaus-style axis line
     this.context.stroke();
     this.context.closePath();
 
@@ -117,8 +119,10 @@ export class View {
     this.context.moveTo(yAxisX, canvasHeight - this.padding);
     this.context.lineTo(yAxisX, this.padding);
     this.context.strokeStyle = AXES_COLOR;
+    this.context.lineWidth = 2;
     this.context.stroke();
     this.context.closePath();
+    this.context.lineWidth = 1;
 
     // grid lines
     const targetGridLines = 10;
@@ -137,12 +141,12 @@ export class View {
       const canvasX =
         ((xValue - xDomain[0]) / xRange) * plotWidth + this.padding;
 
-      // Vertical grid lines (skip the Y-axis line at x = 0)
-      if (Math.abs(xValue) > xEpsilon) {
+      // Vertical grid lines (skip the Y-axis line at the left edge)
+      if (Math.abs(xValue - xDomain[0]) > xEpsilon) {
         this.context.beginPath();
         this.context.moveTo(canvasX, this.padding);
         this.context.lineTo(canvasX, canvasHeight - this.padding);
-        this.context.strokeStyle = "rgba(255, 255, 255, 0.2)";
+        this.context.strokeStyle = "rgba(242, 238, 229, 0.15)"; // bauhaus-paper, translucent
         this.context.stroke();
         this.context.closePath();
       }
@@ -152,7 +156,7 @@ export class View {
       this.context.fillText(xValue.toFixed(2), canvasX - 10, xAxisY + 15);
       this.context.beginPath();
       this.context.moveTo(canvasX, xAxisY);
-      this.context.lineTo(canvasX, xAxisY + 5);
+      this.context.lineTo(canvasX, xAxisY - 5);
       this.context.strokeStyle = AXES_COLOR;
       this.context.stroke();
       this.context.closePath();
@@ -163,12 +167,12 @@ export class View {
       const canvasY =
         (1 - (yValue - yDomain[0]) / yRange) * plotHeight + this.padding;
 
-      // Horizontal grid lines (skip the X-axis line at y = 0)
-      if (Math.abs(yValue) > yEpsilon) {
+      // Horizontal grid lines (skip the X-axis line at the bottom edge)
+      if (Math.abs(yValue - yDomain[0]) > yEpsilon) {
         this.context.beginPath();
         this.context.moveTo(this.padding, canvasY);
         this.context.lineTo(canvasWidth - this.padding, canvasY);
-        this.context.strokeStyle = "rgba(255, 255, 255, 0.2)";
+        this.context.strokeStyle = "rgba(242, 238, 229, 0.15)"; // bauhaus-paper, translucent
         this.context.stroke();
         this.context.closePath();
       }
@@ -178,7 +182,7 @@ export class View {
       this.context.fillText(yValue.toFixed(2), yAxisX - 40, canvasY + 5);
       this.context.beginPath();
       this.context.moveTo(yAxisX, canvasY);
-      this.context.lineTo(yAxisX - 5, canvasY);
+      this.context.lineTo(yAxisX + 5, canvasY);
       this.context.strokeStyle = AXES_COLOR;
       this.context.stroke();
       this.context.closePath();
@@ -192,11 +196,25 @@ export class View {
     }
 
     for (const dataset of this.datasets) {
-      for (const point of dataset) {
+      // Draw connecting line if dataset specifies it
+      if (dataset.line && dataset.points.length > 1) {
+        this.context.beginPath();
+        const start = this.mapToCanvas(dataset.points[0]);
+        this.context.moveTo(start.x, start.y);
+        for (let i = 1; i < dataset.points.length; i++) {
+          const pt = this.mapToCanvas(dataset.points[i]);
+          this.context.lineTo(pt.x, pt.y);
+        }
+        this.context.strokeStyle = dataset.color;
+        this.context.lineWidth = 2;
+        this.context.stroke();
+        this.context.closePath();
+      }
+      for (const point of dataset.points) {
         const canvasPoint = this.mapToCanvas(point);
         this.context.beginPath();
         this.context.rect(canvasPoint.x - 2, canvasPoint.y - 2, 4, 4); // Draw a small square
-        this.context.fillStyle = "blue";
+        this.context.fillStyle = dataset.color;
         this.context.fill();
         this.context.closePath();
       }
