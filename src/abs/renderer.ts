@@ -20,6 +20,13 @@ export class Renderer {
   clear(): void {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
+
+  // Apply a fade effect by drawing a semi-transparent rectangle over the entire canvas
+  fade(fadeAmount: number): void {
+    this.context.fillStyle = `rgba(0, 0, 0, ${fadeAmount})`;
+    this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
   render(agents: Agent[]): void {
     for (const agent of agents) {
       this.context.fillStyle = agent.state.type === "prey" ? "blue" : "red";

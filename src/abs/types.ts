@@ -5,6 +5,7 @@ export interface AgentState {
   energy: number;
   alive: boolean;
   type: "prey" | "predator";
+  age: number;
 }
 
 export interface WorldConfig {

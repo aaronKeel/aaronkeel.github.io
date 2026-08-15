@@ -14,7 +14,7 @@ export class Controller {
 
   update(): void {
     this.world.step();
-    this.renderer.clear();
+    this.renderer.fade(0.5);
     this.renderer.render(this.world.agents);
   }
 }

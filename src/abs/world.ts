@@ -16,7 +16,8 @@ export class World {
 
   step(): void {
     this.agents.forEach(agent => {
-      agent.act(this.config);
+      agent.act(this.config, this.agents);
     });
+    this.agents = this.agents.filter(agent => agent.state.alive); // Remove dead agents
   }
 }

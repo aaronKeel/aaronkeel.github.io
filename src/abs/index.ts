@@ -8,7 +8,7 @@ import * as d3 from "d3";
 
 const world = new World({ width: 800, height: 800 });
 
-const numberOfAgents = 10;
+const numberOfAgents = 40;
 for (let i = 0; i < numberOfAgents; i++) {
   const agentState: AgentState = {
     position: new Vector2d(
@@ -18,6 +18,7 @@ for (let i = 0; i < numberOfAgents; i++) {
     energy: 100,
     alive: true,
     type: Math.random() < 0.5 ? "prey" : "predator",
+    age: 0,
   };
   const agent = new Agent(agentState);
   world.addAgent(agent);
