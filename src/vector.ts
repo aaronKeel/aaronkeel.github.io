@@ -32,6 +32,10 @@ export class Vector2d {
     return Math.sqrt(this.x * this.x + this.y * this.y);
   }
 
+  squaredMagnitude(): number {
+    return this.x * this.x + this.y * this.y;
+  }
+
   normalize(): Vector2d {
     const mag = this.magnitude();
     if (mag === 0) {
@@ -41,7 +45,7 @@ export class Vector2d {
   }
 
   projectOnto(other: Vector2d): Vector2d {
-    const otherMagSquared = other.magnitude() ** 2;
+    const otherMagSquared = other.squaredMagnitude();
     if (otherMagSquared === 0) {
       throw new Error("Cannot project onto a zero vector");
     }
@@ -51,5 +55,9 @@ export class Vector2d {
 
   distanceTo(other: Vector2d): number {
     return this.subtract(other).magnitude();
+  }
+
+  inRadius(other: Vector2d, radius: number): boolean {
+    return this.subtract(other).squaredMagnitude() <= radius * radius;
   }
 }

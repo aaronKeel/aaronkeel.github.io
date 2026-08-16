@@ -27,9 +27,15 @@ export class Renderer {
     this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  render(agents: Agent[]): void {
-    for (const agent of agents) {
-      this.context.fillStyle = agent.state.type === "prey" ? "blue" : "red";
+  render(predators: Agent[], prey: Agent[]): void {
+    this.context.fillStyle = "blue";
+    for (const agent of prey) {
+      this.context.beginPath();
+      this.context.rect(agent.state.position.x, agent.state.position.y, 5, 5);
+      this.context.fill();
+    }
+    this.context.fillStyle = "red";
+    for (const agent of predators) {
       this.context.beginPath();
       this.context.rect(agent.state.position.x, agent.state.position.y, 5, 5);
       this.context.fill();

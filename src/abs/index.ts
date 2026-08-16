@@ -15,7 +15,7 @@ for (let i = 0; i < numberOfAgents; i++) {
       d3.randomUniform(100, world.config.width - 100)(),
       d3.randomUniform(100, world.config.height - 100)(),
     ),
-    energy: 100,
+    energy: 90,
     alive: true,
     type: Math.random() < 0.5 ? "prey" : "predator",
     age: 0,

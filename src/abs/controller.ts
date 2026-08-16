@@ -9,12 +9,12 @@ export class Controller {
     this.world = world;
     this.renderer = renderer;
 
-    this.renderer.render(this.world.agents);
+    this.renderer.render(this.world.predators, this.world.prey);
   }
 
   update(): void {
     this.world.step();
     this.renderer.fade(0.5);
-    this.renderer.render(this.world.agents);
+    this.renderer.render(this.world.predators, this.world.prey);
   }
 }
