@@ -29,5 +29,12 @@ export class World {
     });
     this.predators = this.predators.filter(agent => agent.state.alive);
     this.prey = this.prey.filter(agent => agent.state.alive);
+    // Limit the number of agents to the maximum allowed
+    if (this.predators.length > this.config.maxAgents) {
+      this.predators = this.predators.slice(0, this.config.maxAgents);
+    }
+    if (this.prey.length > this.config.maxAgents) {
+      this.prey = this.prey.slice(0, this.config.maxAgents);
+    }
   }
 }

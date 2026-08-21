@@ -11,4 +11,5 @@ export interface AgentState {
 export interface WorldConfig {
   width: number;
   height: number;
+  maxAgents: number;
 }

@@ -6,7 +6,7 @@ import { Renderer } from "./renderer";
 import { Vector2d } from "../vector";
 import * as d3 from "d3";
 
-const world = new World({ width: 800, height: 800 });
+const world = new World({ width: 800, height: 800, maxAgents: 1000 });
 
 const numberOfAgents = 40;
 for (let i = 0; i < numberOfAgents; i++) {
