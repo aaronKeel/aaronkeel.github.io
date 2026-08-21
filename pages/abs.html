@@ -5,31 +5,22 @@
     <link rel="icon" type="image/svg+xml" href="/a.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Garage</title>
-    <style>
-      html, body {
-        height: 100%;
-        background-color: #333;
-      }
-      body {
-        font-family: Helvetica, sans-serif;
-        margin: 0;
-      }
-      #page {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      #canvas {
-        display: block;
-        background-color: #111;
-      }
-    </style>
+    <link rel="stylesheet" href="/style.css" />
   </head>
-  <body>
+  <body class="abs-page">
     <div id="page">
-      <canvas id="canvas" width="800" height="800"></canvas>
+      <header class="abs-header">
+        <p class="abs-kicker">01 / Living Systems</p>
+        <h1>Live and Die</h1>
+        <p class="abs-status"><span class="status-mark"></span> Autonomous Behaviour Study</p>
+      </header>
+      <div class="abs-stage">
+        <canvas id="canvas" width="800" height="800"></canvas>
+        <div class="abs-legend" aria-label="Simulation legend">
+          <span><i class="legend-swatch legend-swatch--prey"></i>Prey</span>
+          <span><i class="legend-swatch legend-swatch--predator"></i>Predators</span>
+        </div>
+      </div>
     </div>
     <script type="module" src="/src/abs/index.ts"></script>
   </body>

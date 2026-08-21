@@ -23,18 +23,18 @@ export class Renderer {
 
   // Apply a fade effect by drawing a semi-transparent rectangle over the entire canvas
   fade(fadeAmount: number): void {
-    this.context.fillStyle = `rgba(0, 0, 0, ${fadeAmount})`;
+    this.context.fillStyle = `rgba(242, 238, 229, ${fadeAmount})`;
     this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
   render(predators: Agent[], prey: Agent[]): void {
-    this.context.fillStyle = "blue";
+    this.context.fillStyle = "#0b4fd1";
     for (const agent of prey) {
       this.context.beginPath();
       this.context.rect(agent.state.position.x, agent.state.position.y, 5, 5);
       this.context.fill();
     }
-    this.context.fillStyle = "red";
+    this.context.fillStyle = "#d7261e";
     for (const agent of predators) {
       this.context.beginPath();
       this.context.rect(agent.state.position.x, agent.state.position.y, 5, 5);

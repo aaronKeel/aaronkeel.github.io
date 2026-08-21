@@ -68,3 +68,135 @@ body {
 #links a:active {
   color: var(--bauhaus-blue);
 }
+
+.abs-page {
+  background-color: var(--bauhaus-paper);
+  color: var(--bauhaus-black);
+  overflow: hidden;
+}
+
+.abs-page #page {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, transparent 49.9%, rgba(17, 17, 17, 0.08) 50%, transparent 50.1%),
+    var(--bauhaus-paper);
+}
+
+.abs-header {
+  position: absolute;
+  z-index: 1;
+  top: 28px;
+  left: 32px;
+  width: min(290px, calc(100% - 64px));
+  pointer-events: none;
+}
+
+.abs-kicker,
+.abs-status,
+.abs-legend {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.abs-kicker {
+  color: var(--bauhaus-red);
+}
+
+.abs-header h1 {
+  margin: 7px 0 12px;
+  font-family: Georgia, serif;
+  font-size: clamp(32px, 5vw, 58px);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.abs-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--bauhaus-black);
+}
+
+.status-mark {
+  width: 9px;
+  height: 9px;
+  background: var(--bauhaus-yellow);
+  border: 2px solid var(--bauhaus-black);
+  border-radius: 50%;
+}
+
+.abs-stage {
+  position: relative;
+  width: min(800px, 100vmin);
+  height: min(800px, 100vmin);
+  border: 3px solid var(--bauhaus-black);
+  background: var(--bauhaus-paper);
+  box-shadow: 14px 14px 0 var(--bauhaus-red);
+}
+
+.abs-page #canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bauhaus-paper);
+}
+
+.abs-legend {
+  position: absolute;
+  right: 18px;
+  bottom: 17px;
+  display: flex;
+  gap: 14px;
+  color: var(--bauhaus-black);
+}
+
+.abs-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+}
+
+.legend-swatch--prey {
+  background: var(--bauhaus-blue);
+}
+
+.legend-swatch--predator {
+  background: var(--bauhaus-red);
+}
+
+@media (max-width: 640px) {
+  .abs-header {
+    top: 18px;
+    left: 18px;
+    width: calc(100% - 36px);
+  }
+
+  .abs-stage {
+    width: min(800px, calc(100vw - 28px));
+    height: min(800px, calc(100vw - 28px));
+    box-shadow: 8px 8px 0 var(--bauhaus-red);
+  }
+
+  .abs-legend {
+    right: 10px;
+    bottom: 10px;
+    gap: 8px;
+    font-size: 9px;
+  }
+}
